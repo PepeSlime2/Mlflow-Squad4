@@ -55,3 +55,10 @@ Passo a Passo para Executar o Projeto
         with mlflow.start_run(run_name="command-r7b-arabic:7b_Teste01"):
 
     Utilize um nome que identifique corretamente o modelo e o teste realizado.
+
+9. Executar o notebook
+
+    Clique em Run All para executar todas as células
+    ou
+
+    Execute célula por célula manualmente.
