@@ -37,13 +37,20 @@ Passo a Passo para Executar o Projeto
          ollama pull nome-do-modelo
 
     (Substitua nome-do-modelo pelo modelo que deseja utilizar.)
+
     Modelos utilizados até o momento:
-       command arabic 7b;
-       qwen3 8b;
-       llama3.1 8b;
-       ministral 8b;
-       phi3 8b;
-       gemma3 4b.
+
+     command arabic 7b;
+
+     qwen3 8b;
+
+     llama3.1 8b;
+
+     ministral 8b;
+
+     phi3 8b;
+
+     gemma3 4b.
 
 8. Alterar o modelo no código
 
