@@ -37,8 +37,15 @@ Passo a Passo para Executar o Projeto
          ollama pull nome-do-modelo
 
     (Substitua nome-do-modelo pelo modelo que deseja utilizar.)
+    Modelos utilizados até o momento:
+       command arabic 7b;
+       qwen3 8b;
+       llama3.1 8b;
+       ministral 8b;
+       phi3 8b;
+       gemma3 4b.
 
-7. Alterar o modelo no código
+8. Alterar o modelo no código
 
     No trecho abaixo, substitua pelo modelo correspondente que foi baixado no Ollama:
 
@@ -48,7 +55,7 @@ Passo a Passo para Executar o Projeto
                 "prompt": row["inputs"]
             }
 
-8. Alterar o nome do experimento no MLflow
+9. Alterar o nome do experimento no MLflow
 
     Modifique o nome do run conforme o modelo testado:
 
@@ -56,7 +63,7 @@ Passo a Passo para Executar o Projeto
 
     Utilize um nome que identifique corretamente o modelo e o teste realizado.
 
-9. Executar o notebook
+10. Executar o notebook
 
     Clique em Run All para executar todas as células
     ou
