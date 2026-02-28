@@ -10,33 +10,33 @@ Passo a Passo para Executar o Projeto
 
     No terminal, dentro da pasta do projeto, execute:
 
-     venv\Scripts\activate
+         venv\Scripts\activate
 
 3. Instalar as dependências
 
-     pip install -r requirements.txt
+         pip install -r requirements.txt
 
 4. Rodar o MLflow
 
-     mlflow ui
+         mlflow ui
 
-Depois, acesse no navegador:
+    Depois, acesse no navegador:
 
-  http://127.0.0.1:5000
+        http://127.0.0.1:5000
 
 5. Instalar o Ollama
 
   Baixe e instale pelo site oficial:
 
-   https://ollama.com
+       https://ollama.com
 
 6. Baixar os modelos que deseja testar
 
   No terminal, execute:
 
-   ollama pull nome-do-modelo
+       ollama pull nome-do-modelo
 
-    (Substitua nome-do-modelo pelo modelo que deseja utilizar.)
+  (Substitua nome-do-modelo pelo modelo que deseja utilizar.)
 
 7. Alterar o modelo no código
 
