@@ -31,27 +31,27 @@ Passo a Passo para Executar o Projeto
        https://ollama.com
 
 6. Baixar os modelos que deseja testar
+ 
+     No terminal, execute:
 
-  No terminal, execute:
+         ollama pull nome-do-modelo
 
-       ollama pull nome-do-modelo
-
-  (Substitua nome-do-modelo pelo modelo que deseja utilizar.)
+    (Substitua nome-do-modelo pelo modelo que deseja utilizar.)
 
 7. Alterar o modelo no código
 
-  No trecho abaixo, substitua pelo modelo correspondente que foi baixado no Ollama:
+    No trecho abaixo, substitua pelo modelo correspondente que foi baixado no Ollama:
 
-    for _, row in df.iterrows():
-        payload = {
-            "model": "gemma3:4b",
-            "prompt": row["inputs"]
-        }
+        for _, row in df.iterrows():
+            payload = {
+                "model": "gemma3:4b",
+                "prompt": row["inputs"]
+            }
 
 8. Alterar o nome do experimento no MLflow
 
-  Modifique o nome do run conforme o modelo testado:
+    Modifique o nome do run conforme o modelo testado:
 
-    with mlflow.start_run(run_name="command-r7b-arabic:7b_Teste01"):
+        with mlflow.start_run(run_name="command-r7b-arabic:7b_Teste01"):
 
-  Utilize um nome que identifique corretamente o modelo e o teste realizado.
+    Utilize um nome que identifique corretamente o modelo e o teste realizado.
