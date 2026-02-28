@@ -26,9 +26,9 @@ Passo a Passo para Executar o Projeto
 
 5. Instalar o Ollama
 
-  Baixe e instale pelo site oficial:
+    Baixe e instale pelo site oficial:
 
-       https://ollama.com
+        https://ollama.com
 
 6. Baixar os modelos que deseja testar
  
