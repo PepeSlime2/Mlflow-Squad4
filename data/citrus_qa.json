@@ -1,0 +1,62 @@
+[
+  {
+    "input": "Qual é a participação da citricultura no volume das oito principais frutíferas brasileiras?",
+    "ground_truth": "A citricultura representa cerca de 55% do volume das oito principais frutíferas brasileiras."
+  },
+  {
+    "input": "A que gênero pertencem as principais espécies cítricas cultivadas comercialmente?",
+    "ground_truth": "Pertencem ao gênero Citrus spp."
+  },
+  {
+    "input": "Qual a faixa de exportação de nitrogênio por tonelada de fruto colhido?",
+    "ground_truth": "De 1,9 a 2,4 kg por tonelada de fruto colhido."
+  },
+  {
+    "input": "Qual é a faixa adequada de fósforo foliar em citros?",
+    "ground_truth": "De 1,2 a 1,6 g kg⁻¹."
+  },
+  {
+    "input": "Qual profundidade deve ser amostrada para recomendações de adubação e calagem?",
+    "ground_truth": "De 0–20 cm."
+  },
+  {
+    "input": "Descreva o procedimento correto de amostragem foliar para citros.",
+    "ground_truth": "Deve-se coletar a 3ª ou 4ª folha do ramo com fruto terminal, gerada na primavera, com aproximadamente seis meses de idade, normalmente entre fevereiro e março, em ramos com frutos de 2 a 4 cm de diâmetro, amostrando pelo menos 20 árvores por talhão e coletando quatro folhas por árvore, uma em cada quadrante da copa."
+  },
+  {
+    "input": "Por que é necessário aguardar 30 dias após pulverizações antes da coleta foliar?",
+    "ground_truth": "Porque pulverizações podem deixar nutrientes aderidos à superfície das folhas e causar erro na interpretação da análise."
+  },
+  {
+    "input": "Quais camadas do solo devem ser amostradas para diagnóstico de fertilidade em pomares?",
+    "ground_truth": "0–20 cm para recomendações de adubação e calagem e 20–40 cm para diagnóstico de barreiras químicas e movimentação de nutrientes."
+  },
+  {
+    "input": "Qual a meta de saturação por bases recomendada na calagem para citros?",
+    "ground_truth": "Elevar a saturação por bases a 70%."
+  },
+  {
+    "input": "Qual teor mínimo de magnésio deve ser mantido na camada de 0–20 cm?",
+    "ground_truth": "Pelo menos 8 mmolc dm⁻³."
+  },
+  {
+    "input": "Para laranjas destinadas à indústria com produtividade de 51–60 t ha⁻¹ e N foliar entre 25–30 g kg⁻¹, qual a dose recomendada de N?",
+    "ground_truth": "200 kg ha⁻¹ de N."
+  },
+  {
+    "input": "Para laranjas destinadas ao consumo in natura com produtividade de 41–50 t ha⁻¹ e K trocável entre 1,6–3,0 mmolc dm⁻³, qual a dose recomendada de K₂O?",
+    "ground_truth": "180 kg ha⁻¹ de K₂O."
+  },
+  {
+    "input": "Para lima ácida Tahiti com produtividade acima de 60 t ha⁻¹ e N foliar entre 20–24 g kg⁻¹, qual a dose recomendada de N?",
+    "ground_truth": "180 kg ha⁻¹ de N."
+  },
+  {
+    "input": "O que deve ser feito quando o teor de fósforo no solo for superior a 80 mg dm⁻³?",
+    "ground_truth": "Não aplicar fósforo para evitar desequilíbrios nutricionais."
+  },
+  {
+    "input": "Por que a análise foliar é considerada essencial para diagnóstico de nitrogênio em citros?",
+    "ground_truth": "Porque a análise de solo para nitrogênio não é consistente, sendo o teor foliar o critério direto de avaliação da disponibilidade do nutriente."
+  }
+]
