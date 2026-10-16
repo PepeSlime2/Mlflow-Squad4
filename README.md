@@ -76,3 +76,43 @@ Passo a Passo para Executar o Projeto
     ou
 
     Execute célula por célula manualmente.
+
+## Perfil nas perguntas
+
+O frontend envia o perfil selecionado diretamente no corpo de cada chamada a
+`POST /perguntar` ou `POST /perguntar/stream`. Não é necessário registrar o
+perfil separadamente nem enviar `user_id`.
+
+```json
+{
+  "pergunta": "Qual é a produtividade média da soja?",
+  "profile": "produtor_rural"
+}
+```
+
+`profile` aceita `produtor_rural`, `cooperativa`, `empresa`,
+`pesquisador_universitario`, `tecnico`, `instituicao_publica` ou `visitante`.
+Se omitido, o backend usa `visitante`; valores fora da lista retornam `422`.
+O mesmo campo funciona com o payload de streaming, por exemplo:
+
+```json
+{
+  "pergunta": "Qual é a produtividade média da soja?",
+  "profile": "tecnico"
+}
+```
+
+O Chat avaliador pode usar `POST /perguntar/avaliador/stream` para receber
+eventos NDJSON enquanto a resposta é gerada e aguardar os metadados da avaliação:
+
+```json
+{
+  "pergunta": "Qual é a produtividade média da soja?",
+  "ground_truth": "Resposta esperada para avaliação",
+  "profile": "visitante"
+}
+```
+
+O endpoint emite eventos `token`, depois `status` enquanto a avaliação é
+executada e, ao final, `metadata` com referências, flag de alucinação e
+confidence score. `ground_truth` pode ser omitido.
