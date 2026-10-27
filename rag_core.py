@@ -269,8 +269,8 @@ def compute_confidence_score(
 
 # ── QDRANT / RETRIEVAL ───────────────────────────────────────────────────
 
-QDRANT_URL = "https://57eb89f7-8062-4156-8bd9-761b749c9d3b.sa-east-1-0.aws.cloud.qdrant.io:6333"
-API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIn0.o4SI3QmZtkdOUXK8KVRunQT1SymcxtZrkzUVCXmiZvQ"
+QDRANT_URL = "https://sb100qdrant.optin.com.br"
+API_KEY = "fwaoNYhMTH3vf2QfzrxajQ=="
 COLLECTION_NAME = "sb100"
 
 SIMILARITY_THRESHOLD = 0.01  # score de fusão RRF, não é mais cosine similarity
@@ -496,7 +496,10 @@ def gerar_resposta_sync(prompt: str) -> str:
     return response.json().get("response", "")
 
 
-async def generate_stream(prompt: str) -> AsyncGenerator[str, None]:
+async def generate_stream(
+    prompt: str,
+    temperature: float = 0.1,
+) -> AsyncGenerator[str, None]:
     """
     Streaming da geração do Ollama. Uso:
         async for token in generate_stream(prompt):
@@ -505,7 +508,7 @@ async def generate_stream(prompt: str) -> AsyncGenerator[str, None]:
     payload = {
         "model": OLLAMA_MODEL,
         "prompt": prompt,
-        "temperature": 0.1,
+        "temperature": temperature,
         "stream": True,
     }
     async with httpx.AsyncClient(timeout=None) as client:
@@ -734,6 +737,7 @@ async def perguntar_stream(
     pergunta: str,
     ground_truth: str = "",
     profile: str = "visitante",
+    temperature: float = 0.1,
 ) -> AsyncGenerator[str, None]:
     """
     Gera a resposta em streaming (token a token) para o front. A avaliação
@@ -753,7 +757,7 @@ async def perguntar_stream(
     prompt_final = build_prompt(profile).format(pergunta=pergunta, context=context)
 
     resposta_parts = []
-    async for token in generate_stream(prompt_final):
+    async for token in generate_stream(prompt_final, temperature=temperature):
         resposta_parts.append(token)
         yield token
 

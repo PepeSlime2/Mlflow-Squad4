@@ -102,6 +102,31 @@ O mesmo campo funciona com o payload de streaming, por exemplo:
 }
 ```
 
+O endpoint `POST /perguntar/stream` também aceita opcionalmente `response_mode`
+para selecionar a temperatura de geração configurada pelo servidor:
+
+| `response_mode` | Temperatura |
+| --- | ---: |
+| `deterministic` | `0.1` |
+| `moderate` | `0.3` |
+| `creative` | `0.6` |
+
+Exemplo:
+
+```json
+{
+  "pergunta": "Qual é a produtividade média da soja?",
+  "profile": "tecnico",
+  "response_mode": "moderate"
+}
+```
+
+Se `response_mode` for omitido, o endpoint mantém a geração atual
+(temperatura `0.1`), garantindo compatibilidade com clientes existentes.
+Valores não reconhecidos retornam HTTP `400`. A API não recebe temperatura nem
+outras configurações livres de geração do cliente. Esse campo se aplica apenas
+a `POST /perguntar/stream`; os formatos e eventos NDJSON permanecem iguais.
+
 O Chat avaliador pode usar `POST /perguntar/avaliador/stream` para receber
 eventos NDJSON enquanto a resposta é gerada e aguardar os metadados da avaliação:
 

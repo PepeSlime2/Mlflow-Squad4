@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from typing import Optional, List, Union
+from typing import Any, Optional, List, Union
 from fastapi.middleware.cors import CORSMiddleware
 import json
 from typing import Literal
@@ -18,6 +18,12 @@ Profile = Literal[
     "instituicao_publica",
     "visitante",
 ]
+
+RESPONSE_MODE_TEMPERATURES = {
+    "deterministic": 0.1,
+    "moderate": 0.5,
+    "creative": 0.9,
+}
 
 
 app = FastAPI(
@@ -49,12 +55,29 @@ class AvaliadorStreamRequest(BaseModel):
     profile: Profile = "visitante"
 
 
+class PerguntaStreamRequest(PerguntaRequest):
+    response_mode: Optional[Any] = None
+
+
 # ============================================================
 # STREAMING — USADO PELO CHAT
 # ============================================================
 
 @app.post("/perguntar/stream")
-async def fazer_pergunta_stream(data: PerguntaRequest):
+async def fazer_pergunta_stream(data: PerguntaStreamRequest):
+
+    response_mode = None
+    if "response_mode" in data.model_fields_set:
+        response_mode = data.response_mode
+        if (
+            not isinstance(response_mode, str)
+            or response_mode not in RESPONSE_MODE_TEMPERATURES
+        ):
+            modos_validos = ", ".join(RESPONSE_MODE_TEMPERATURES)
+            raise HTTPException(
+                status_code=400,
+                detail=f"response_mode inválido. Valores permitidos: {modos_validos}.",
+            )
 
     if not data.pergunta:
         return {
@@ -63,6 +86,15 @@ async def fazer_pergunta_stream(data: PerguntaRequest):
 
     profile = data.profile
     print(f"[API] Perfil recebido em /perguntar/stream: {profile}", flush=True)
+    modo_log = (
+        response_mode
+        if response_mode is not None
+        else "não informado (padrão atual)"
+    )
+    print(
+        f"[API] Modo de resposta recebido em /perguntar/stream: {modo_log}",
+        flush=True,
+    )
 
     async def gerar():
 
@@ -72,7 +104,16 @@ async def fazer_pergunta_stream(data: PerguntaRequest):
         # STREAM DA RESPOSTA
         # --------------------------------------------
 
-        async for token in perguntar_stream(data.pergunta, profile=profile):
+        if response_mode is None:
+            stream = perguntar_stream(data.pergunta, profile=profile)
+        else:
+            stream = perguntar_stream(
+                data.pergunta,
+                profile=profile,
+                temperature=RESPONSE_MODE_TEMPERATURES[response_mode],
+            )
+
+        async for token in stream:
 
             resposta_completa += token
 
