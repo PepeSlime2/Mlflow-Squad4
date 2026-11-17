@@ -115,20 +115,15 @@ A API ficara disponivel em:
 
 ## 8. Abrir o acesso externo com ngrok
 
-Para disponibilizar temporariamente a API pela internet, instale o ngrok:
+Para disponibilizar temporariamente a API pela internet:
 
-```powershell
-winget install -e --id Ngrok.Ngrok
-```
+1. Acesse https://ngrok.com/, crie uma conta e faça login.
+2. Baixe e instale o ngrok pelo site oficial.
+3. Conclua a configuracao da conta e do token diretamente no painel do ngrok,
+   seguindo as instrucoes exibidas no site.
 
-No terminal, conecte sua conta ngrok, caso ainda nao tenha configurado o
-token:
-
-```powershell
-ngrok config add-authtoken SEU_TOKEN_DO_NGROK
-```
-
-Abra o ngrok em outro terminal e encaminhe a porta da API:
+Depois de instalado e configurado, abra um terminal separado e encaminhe a
+porta da API:
 
 ```powershell
 ngrok http 8000
@@ -150,43 +145,7 @@ O endereco gerado pode mudar sempre que o ngrok for reiniciado. Na inicializacao
 do ngrok, acesse tambem o painel de encaminhamento exibido no terminal,
 geralmente em `http://127.0.0.1:4040`.
 
-## 9. Testar o RAG
-
-Use o Swagger em `http://127.0.0.1:8000/docs` ou execute no PowerShell:
-
-```powershell
-$body = @{
-    pergunta = "Qual e a produtividade media da soja?"
-    profile = "produtor_rural"
-} | ConvertTo-Json
-
-Invoke-RestMethod `
-    -Uri "http://127.0.0.1:8000/perguntar" `
-    -Method Post `
-    -ContentType "application/json" `
-    -Body $body
-```
-
-Para testar o streaming pelo terminal:
-
-```powershell
-$body = @{
-    pergunta = "Qual e a produtividade media da soja?"
-    profile = "tecnico"
-    response_mode = "moderate"
-} | ConvertTo-Json
-
-Invoke-RestMethod `
-    -Uri "http://127.0.0.1:8000/perguntar/stream" `
-    -Method Post `
-    -ContentType "application/json" `
-    -Body $body
-```
-
-Tambem e possivel testar pelo endereco publico gerado pelo ngrok substituindo
-`http://127.0.0.1:8000` pelo endereco HTTPS mostrado no terminal do ngrok.
-
-## 10. Resumo dos processos
+## 9. Resumo dos processos
 
 Os tres componentes devem permanecer em execucao ao mesmo tempo:
 
@@ -197,7 +156,7 @@ Os tres componentes devem permanecer em execucao ao mesmo tempo:
 | API RAG | `python -m uvicorn api:app --host 127.0.0.1 --port 8000 --reload` | http://127.0.0.1:8000 |
 | Ngrok | `ngrok http 8000` | Endereco HTTPS publico exibido pelo ngrok |
 
-## 11. Configuracao usada pelo RAG
+## 10. Configuracao usada pelo RAG
 
 O sistema usa:
 
