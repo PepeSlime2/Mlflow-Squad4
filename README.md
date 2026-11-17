@@ -1,81 +1,212 @@
-Passo a Passo para Executar o Projeto
+# Como rodar o RAG
 
-1. Ativar a extensão do Jupyter (caso utilize VS Code)
+Esta instrução executa somente a API do RAG (`api.py`) e suas dependências
+principais: Ollama, Qdrant e MLflow.
 
-    Instale a extensão Jupyter no VS Code.
+## 1. Pre-requisitos
 
-    Selecione o interpretador do ambiente virtual criado (venv).
+- Python 3.11 ou 3.12
+- [Ollama](https://ollama.com/) instalado
+- Conexao com a internet
+- Acesso ao Qdrant configurado no projeto
 
-2. Ativar o ambiente virtual
+## 2. Entrar na pasta do projeto
 
-    No terminal, dentro da pasta do projeto, execute:
+Abra um terminal na raiz do repositorio, onde estao `api.py` e
+`rag_core.py`.
 
-         venv\Scripts\activate
+```powershell
+cd C:\Users\pedro\Documents\SB-100_Squad4\Mlflow-Squad4
+```
 
-3. Instalar as dependências
+## 3. Criar e ativar o ambiente virtual
 
-         pip install -r requirements.txt
+```powershell
+py -3.12 -m venv venv
+venv\Scripts\Activate.ps1
+```
 
-4. Rodar o MLflow
+Caso o PowerShell bloqueie o script de ativacao, execute uma vez:
 
-         mlflow ui
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+venv\Scripts\Activate.ps1
+```
 
-    Depois, acesse no navegador:
+Para verificar se o ambiente foi ativado:
 
-        http://127.0.0.1:5000
+```powershell
+python --version
+where.exe python
+```
 
-5. Instalar o Ollama
+O caminho exibido deve apontar para `venv\Scripts\python.exe`.
 
-    Baixe e instale pelo site oficial:
+## 4. Instalar as dependencias
 
-        https://ollama.com
+```powershell
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+python -m pip install fastembed
+```
 
-6. Baixar os modelos que deseja testar
- 
-     No terminal, execute:
+Na primeira inicializacao, o sistema tambem pode baixar da internet os
+modelos de embeddings `Qwen/Qwen3-Embedding-0.6B` e
+`Qdrant/bm25`.
 
-         ollama pull nome-do-modelo
+## 5. Iniciar o Ollama
 
-    (Substitua nome-do-modelo pelo modelo que deseja utilizar.)
+Em um terminal separado, mantenha o servidor do Ollama ativo:
 
-    Modelos utilizados até o momento:
+```powershell
+ollama serve
+```
 
-     command arabic 7b;
+Se o Ollama ja estiver instalado e rodando como aplicativo no Windows,
+este passo pode ser ignorado.
 
-     qwen3 8b;
+Baixe o modelo usado pelo RAG:
 
-     llama3.1 8b;
+```powershell
+ollama pull llama3.1:8b
+```
 
-     ministral 8b;
+Teste se o modelo responde:
 
-     phi3 8b;
+```powershell
+ollama run llama3.1:8b "Responda apenas com OK"
+```
 
-     gemma3 4b.
+O nome do modelo esta definido em `rag_core.py`, na constante
+`OLLAMA_MODEL`. Para trocar o modelo, edite essa constante e execute
+`ollama pull nome-do-modelo` antes de iniciar a API.
 
-8. Alterar o modelo no código
+## 6. Iniciar o MLflow
 
-    No trecho abaixo, substitua pelo modelo correspondente que foi baixado no Ollama:
+Em outro terminal, com o ambiente virtual ativado, execute:
 
-        for _, row in df.iterrows():
-            payload = {
-                "model": "gemma3:4b",
-                "prompt": row["inputs"]
-            }
+```powershell
+venv\Scripts\activate
+mlflow ui --host 127.0.0.1 --port 5000
+```
 
-9. Alterar o nome do experimento no MLflow
+A interface do MLflow ficara disponivel em:
 
-    Modifique o nome do run conforme o modelo testado:
+http://127.0.0.1:5000
 
-        with mlflow.start_run(run_name="command-r7b-arabic:7b_Teste01"):
+A URL de rastreamento usada pelo RAG ja esta configurada em `rag_core.py`
+como `http://localhost:5000`.
 
-    Utilize um nome que identifique corretamente o modelo e o teste realizado.
+## 7. Iniciar a API do RAG
 
-10. Executar o notebook
+Abra um terceiro terminal na raiz do projeto, ative o ambiente virtual e
+execute:
 
-    Clique em Run All para executar todas as células
-    ou
+```powershell
+venv\Scripts\Activate.ps1
+python -m uvicorn api:app --host 127.0.0.1 --port 8000 --reload
+```
 
-    Execute célula por célula manualmente.
+Ao iniciar, o terminal deve mostrar o carregamento dos modelos de embedding.
+A API ficara disponivel em:
+
+- API: http://127.0.0.1:8000
+- Documentacao Swagger: http://127.0.0.1:8000/docs
+
+## 8. Abrir o acesso externo com ngrok
+
+Para disponibilizar temporariamente a API pela internet, instale o ngrok:
+
+```powershell
+winget install -e --id Ngrok.Ngrok
+```
+
+No terminal, conecte sua conta ngrok, caso ainda nao tenha configurado o
+token:
+
+```powershell
+ngrok config add-authtoken SEU_TOKEN_DO_NGROK
+```
+
+Abra o ngrok em outro terminal e encaminhe a porta da API:
+
+```powershell
+ngrok http 8000
+```
+
+Mantenha esse terminal aberto. O ngrok mostrara um endereco publico no formato:
+
+```text
+https://xxxx-xx-xx-xx-xx.ngrok-free.app
+```
+
+Use esse endereco no frontend ou nos testes externos. Por exemplo:
+
+```text
+https://xxxx-xx-xx-xx-xx.ngrok-free.app/perguntar
+```
+
+O endereco gerado pode mudar sempre que o ngrok for reiniciado. Na inicializacao
+do ngrok, acesse tambem o painel de encaminhamento exibido no terminal,
+geralmente em `http://127.0.0.1:4040`.
+
+## 9. Testar o RAG
+
+Use o Swagger em `http://127.0.0.1:8000/docs` ou execute no PowerShell:
+
+```powershell
+$body = @{
+    pergunta = "Qual e a produtividade media da soja?"
+    profile = "produtor_rural"
+} | ConvertTo-Json
+
+Invoke-RestMethod `
+    -Uri "http://127.0.0.1:8000/perguntar" `
+    -Method Post `
+    -ContentType "application/json" `
+    -Body $body
+```
+
+Para testar o streaming pelo terminal:
+
+```powershell
+$body = @{
+    pergunta = "Qual e a produtividade media da soja?"
+    profile = "tecnico"
+    response_mode = "moderate"
+} | ConvertTo-Json
+
+Invoke-RestMethod `
+    -Uri "http://127.0.0.1:8000/perguntar/stream" `
+    -Method Post `
+    -ContentType "application/json" `
+    -Body $body
+```
+
+Tambem e possivel testar pelo endereco publico gerado pelo ngrok substituindo
+`http://127.0.0.1:8000` pelo endereco HTTPS mostrado no terminal do ngrok.
+
+## 10. Resumo dos processos
+
+Os tres componentes devem permanecer em execucao ao mesmo tempo:
+
+| Componente | Comando | Endereco |
+| --- | --- | --- |
+| Ollama | `ollama serve` | http://localhost:11434 |
+| MLflow | `mlflow ui --host 127.0.0.1 --port 5000` | http://127.0.0.1:5000 |
+| API RAG | `python -m uvicorn api:app --host 127.0.0.1 --port 8000 --reload` | http://127.0.0.1:8000 |
+| Ngrok | `ngrok http 8000` | Endereco HTTPS publico exibido pelo ngrok |
+
+## 11. Configuracao usada pelo RAG
+
+O sistema usa:
+
+- **Qdrant** remoto para a busca hibrida;
+- **Qwen3-Embedding-0.6B** para embeddings densos;
+- **BM25 do FastEmbed** para embeddings esparsos;
+- **RRF** para combinar os resultados;
+- **Ollama com llama3.1:8b** para gerar as respostas;
+- **MLflow** para registrar avaliacoes e metricas.
 
 ## Perfil nas perguntas
 
@@ -108,8 +239,8 @@ para selecionar a temperatura de geração configurada pelo servidor:
 | `response_mode` | Temperatura |
 | --- | ---: |
 | `deterministic` | `0.1` |
-| `moderate` | `0.3` |
-| `creative` | `0.6` |
+| `moderate` | `0.5` |
+| `creative` | `0.9` |
 
 Exemplo:
 

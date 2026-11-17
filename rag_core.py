@@ -1,28 +1,3 @@
-"""
-rag_core.py — Agente SB100
-
-Mudanças principais em relação à versão anterior:
-
-1. BUG CORRIGIDO: `search_chunks` fazia a mesma requisição ao Qdrant duas vezes
-   (dobrava a latência do retrieval à toa).
-2. STREAMING: `perguntar_stream()` gera a resposta token a token via Ollama
-   (stream=True) e já entrega isso pro front conforme chega — não espera o
-   texto inteiro terminar.
-3. AVALIAÇÃO DESACOPLADA: judge (LLM-as-judge), hallucination score,
-   confidence score e o log no MLflow agora rodam DEPOIS que a resposta já
-   foi enviada ao usuário, em background (`asyncio.create_task`). Isso tira
-   do caminho crítico uma segunda geração completa do LLM, que antes o
-   usuário esperava sem ver nada na tela.
-4. EMBEDDINGS EM PARALELO: o vetor denso (GPU) e o esparso/BM25 (CPU) agora
-   são calculados concorrentemente com um ThreadPoolExecutor.
-5. FORMATAÇÃO: prompt com exemplo few-shot de formatação + normalização leve
-   de Markdown na resposta final (usada para o log/avaliação; o streaming
-   real que o usuário vê continua chegando token a token).
-6. API mínima em FastAPI no fim do arquivo, com endpoint de streaming
-   (`/perguntar/stream`) e endpoint em lote (`/perguntar`), só para você
-   plugar no front sem precisar montar isso do zero.
-"""
-
 import mlflow
 import requests
 import httpx
@@ -271,7 +246,7 @@ def compute_confidence_score(
 
 QDRANT_URL = "https://sb100qdrant.optin.com.br"
 API_KEY = "fwaoNYhMTH3vf2QfzrxajQ=="
-COLLECTION_NAME = "sb100"
+COLLECTION_NAME = "sb100_clone"
 
 SIMILARITY_THRESHOLD = 0.01  # score de fusão RRF, não é mais cosine similarity
 
