@@ -3,14 +3,35 @@
 Esta instrução executa somente a API do RAG (`api.py`) e suas dependências
 principais: Ollama, Qdrant e MLflow.
 
-## 1. Pre-requisitos
+## 1. Instalar o Ollama e baixar o modelo
+
+1. Acesse https://ollama.com/ e baixe o instalador para Windows.
+2. Instale o Ollama e abra o aplicativo. Ele normalmente inicia o servico em
+   segundo plano.
+3. Abra um terminal e baixe o modelo usado pelo RAG:
+
+   ```powershell
+   ollama pull llama3.1:8b
+   ```
+
+A instalacao do Ollama e o download do modelo sao feitos uma unica vez. Nao e
+necessario manter um terminal aberto com `ollama serve` quando o aplicativo do
+Ollama ja estiver em execucao em segundo plano. Se o RAG nao conseguir se
+conectar ao Ollama, abra o aplicativo; como alternativa, inicie manualmente
+`ollama serve` em um terminal separado e mantenha esse terminal aberto enquanto
+usar o RAG.
+
+O nome do modelo esta definido em `rag_core.py`, na constante `OLLAMA_MODEL`.
+Para trocar o modelo, edite essa constante e baixe o novo modelo com
+`ollama pull nome-do-modelo`.
+
+## 2. Pre-requisitos
 
 - Python 3.11 ou 3.12
-- [Ollama](https://ollama.com/) instalado
 - Conexao com a internet
 - Acesso ao Qdrant configurado no projeto
 
-## 2. Entrar na pasta do projeto
+## 3. Entrar na pasta do projeto
 
 Abra um terminal na raiz do repositorio, onde estao `api.py` e
 `rag_core.py`.
@@ -19,7 +40,7 @@ Abra um terminal na raiz do repositorio, onde estao `api.py` e
 cd C:\Users\pedro\Documents\SB-100_Squad4\Mlflow-Squad4
 ```
 
-## 3. Criar e ativar o ambiente virtual
+## 4. Criar e ativar o ambiente virtual
 
 ```powershell
 py -3.12 -m venv venv
@@ -42,7 +63,7 @@ where.exe python
 
 O caminho exibido deve apontar para `venv\Scripts\python.exe`.
 
-## 4. Instalar as dependencias
+## 5. Instalar as dependencias
 
 ```powershell
 python -m pip install --upgrade pip
@@ -53,33 +74,6 @@ python -m pip install fastembed
 Na primeira inicializacao, o sistema tambem pode baixar da internet os
 modelos de embeddings `Qwen/Qwen3-Embedding-0.6B` e
 `Qdrant/bm25`.
-
-## 5. Iniciar o Ollama
-
-Em um terminal separado, mantenha o servidor do Ollama ativo:
-
-```powershell
-ollama serve
-```
-
-Se o Ollama ja estiver instalado e rodando como aplicativo no Windows,
-este passo pode ser ignorado.
-
-Baixe o modelo usado pelo RAG:
-
-```powershell
-ollama pull llama3.1:8b
-```
-
-Teste se o modelo responde:
-
-```powershell
-ollama run llama3.1:8b "Responda apenas com OK"
-```
-
-O nome do modelo esta definido em `rag_core.py`, na constante
-`OLLAMA_MODEL`. Para trocar o modelo, edite essa constante e execute
-`ollama pull nome-do-modelo` antes de iniciar a API.
 
 ## 6. Iniciar o MLflow
 
@@ -147,11 +141,14 @@ geralmente em `http://127.0.0.1:4040`.
 
 ## 9. Resumo dos processos
 
-Os tres componentes devem permanecer em execucao ao mesmo tempo:
+O aplicativo Ollama deve estar em execucao para que o RAG consiga gerar
+respostas. Quando ele ja estiver rodando em segundo plano, nao e necessario
+abrir um terminal separado para o Ollama. Mantenha os terminais do MLflow, da
+API e do ngrok abertos enquanto precisar desses servicos.
 
 | Componente | Comando | Endereco |
 | --- | --- | --- |
-| Ollama | `ollama serve` | http://localhost:11434 |
+| Ollama | Abra o aplicativo; normalmente nao precisa executar comando | http://localhost:11434 |
 | MLflow | `mlflow ui --host 127.0.0.1 --port 5000` | http://127.0.0.1:5000 |
 | API RAG | `python -m uvicorn api:app --host 127.0.0.1 --port 8000 --reload` | http://127.0.0.1:8000 |
 | Ngrok | `ngrok http 8000` | Endereco HTTPS publico exibido pelo ngrok |
